@@ -4,6 +4,8 @@ import com.google.common.base.Objects;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.List;
+
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Objects.equal;
 
@@ -13,6 +15,7 @@ public class Address {
     private String zipcode;
     private String city;
     private String state;
+    private List<String> tags;
 
     @DBRef
     private Country country;
@@ -57,6 +60,14 @@ public class Address {
         this.country = country;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,12 +77,13 @@ public class Address {
                 equal(zipcode, address1.zipcode) &&
                 equal(city, address1.city) &&
                 equal(state, address1.state) &&
-                equal(country, address1.country);
+                equal(country, address1.country) &&
+                equal(tags, address1.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(address, zipcode, city, state, country);
+        return Objects.hashCode(address, zipcode, city, state, country, tags);
     }
 
     @Override
@@ -82,6 +94,7 @@ public class Address {
                 .add("city", city)
                 .add("state", state)
                 .add("country", country)
+                .add("tags", tags)
                 .omitNullValues()
                 .toString();
     }
