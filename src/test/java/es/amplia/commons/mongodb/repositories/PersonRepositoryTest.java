@@ -9,6 +9,7 @@ import es.amplia.commons.mongodb.model.Person;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.hamcrest.Matchers;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Rule;
@@ -106,11 +107,37 @@ public class PersonRepositoryTest extends AbstractSpringTest {
     }
 
     @Test
+    public void given_people_inserted_in_db_when_findByFullname_invoked_then_all_people_with_that_name_and_lastName_is_returned() {
+        given_a_list_of_people_persisted_in_mongo(100);
+        String name = "person_name";
+        String lastName = "person_lastname";
+        List<Person> found = personRepository.findByFullname(name, lastName);
+        LOGGER.debug("{} people found with {} as name and {} as lastName", found.size(), name, lastName);
+        for (Person person : found) {
+            assertThat(person.getName(), is(name));
+            assertThat(person.getLastName(), is(lastName));
+        }
+    }
+
+    @Test
     public void given_a_person_in_db_when_findById_invoked_then_person_is_returned() {
         Person person = given_a_list_of_people_persisted_in_mongo(1).get(0);
 
         Person insertedPerson = personRepository.findById(person.getId());
         assertThat(insertedPerson, is(person));
+    }
+
+    @Test
+    public void given_people_inserted_in_db_and_a_name_a_lastName_and_an_age_when_invoked_a_list_of_people_with_that_values_is_returned() {
+        given_a_list_of_people_persisted_in_mongo(100);
+        String name = "person_name";
+        String lastName = "person_lastname";
+        int age = 50;
+        List<Person> people = personRepository.findByNameAndLastNameOrAgeWithoutCountry(name, lastName, age);
+        LOGGER.debug("{} people found with {} as name AND {} as lastName OR {} as age", people.size(), name, lastName, age);
+        for (Person person : people) {
+            assertTrue((person.getName().equals(name) && person.getLastName().equals(lastName)) || person.getAge() == age);
+        }
     }
 
     @Test
@@ -133,6 +160,27 @@ public class PersonRepositoryTest extends AbstractSpringTest {
         personRepository.save(insertedPerson);
     }
 
+    @Test
+    public void given_a_partially_filled_person_persisted_in_db_when_updateSelective_invoked_only_informed_fields_are_updated() {
+        Person partiallyFilledPerson = given_a_partially_filled_person();
+        personRepository.insert(partiallyFilledPerson);
+
+        Person updatedPerson = new Person();
+        updatedPerson.setId(partiallyFilledPerson.getId());
+        updatedPerson.setLastName("updated_person_lastname");
+        updatedPerson.setBirthDate(LocalDate.now());
+        updatedPerson.setAddress(AddressBuilder.builder()
+                .city("updated_person_city")
+                .addTags("tag_X", "tag_Y")
+                .country((Country) CountryBuilder.builder()
+                        .id(countries.get(ThreadLocalRandom.current().nextInt(countries.size())).getId())
+                        .build())
+                .build());
+
+        int n = personRepository.updatePersonSelective(updatedPerson);
+        assertThat(n, equalTo(1));
+    }
+
     private List<Person> given_a_list_of_people_persisted_in_mongo(int size) {
         List<Person> people = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -141,6 +189,15 @@ public class PersonRepositoryTest extends AbstractSpringTest {
             people.add(person);
         }
         return people;
+    }
+
+    private Person given_a_partially_filled_person() {
+        Person person = given_a_person();
+        person.setLastName(null);
+        person.setBirthDate(null);
+        person.setAge(null);
+        person.setAddress(null);
+        return person;
     }
 
     private Person given_a_person() {
