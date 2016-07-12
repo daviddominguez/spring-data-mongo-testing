@@ -9,8 +9,10 @@ import es.amplia.commons.mongodb.model.Person;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.hamcrest.Matchers;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -76,7 +78,7 @@ public class PersonRepositoryTest extends AbstractSpringTest {
     @Test
     public void given_people_inserted_in_db_when_findByBirthDateAfter_invoked_then_people_returned_has_born_after_passed_values() {
         given_a_list_of_people_persisted_in_mongo(100);
-        LocalDate birthDate = new LocalDate(2000, 1, 1);
+        LocalDateTime birthDate = new LocalDateTime(2000, 1, 1, 0, 0);
         List<Person> found = personRepository.findByBirthDateAfter(birthDate);
         LOGGER.debug("{} people found with birthdate after {}", found.size(), birthDate);
         for (Person person : found) {
@@ -162,13 +164,16 @@ public class PersonRepositoryTest extends AbstractSpringTest {
 
     @Test
     public void given_a_partially_filled_person_persisted_in_db_when_updateSelective_invoked_only_informed_fields_are_updated() {
+        DateTimeZone zone = DateTimeZone.getDefault();
+//        DateTimeZone.setDefault(zone);
+
         Person partiallyFilledPerson = given_a_partially_filled_person();
         personRepository.insert(partiallyFilledPerson);
 
         Person updatedPerson = new Person();
         updatedPerson.setId(partiallyFilledPerson.getId());
         updatedPerson.setLastName("updated_person_lastname");
-        updatedPerson.setBirthDate(LocalDate.now());
+        updatedPerson.setBirthDate(LocalDateTime.now());
         updatedPerson.setAddress(AddressBuilder.builder()
                 .city("updated_person_city")
                 .addTags("tag_X", "tag_Y")
@@ -194,7 +199,6 @@ public class PersonRepositoryTest extends AbstractSpringTest {
     private Person given_a_partially_filled_person() {
         Person person = given_a_person();
         person.setLastName(null);
-        person.setBirthDate(null);
         person.setAge(null);
         person.setAddress(null);
         return person;

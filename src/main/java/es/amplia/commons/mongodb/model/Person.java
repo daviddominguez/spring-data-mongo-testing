@@ -1,7 +1,9 @@
 package es.amplia.commons.mongodb.model;
 
 import com.google.common.base.Objects;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,8 +22,8 @@ public class Person extends Entity {
     private String lastName;
     private Address address;
 
-    @DateTimeFormat(iso = ISO.DATE)
-    private LocalDate birthDate;
+    @DateTimeFormat(iso = ISO.DATE_TIME)
+    private LocalDateTime birthDate;
 
     private Integer age;
     private BigDecimal salary;
@@ -50,11 +52,11 @@ public class Person extends Entity {
         this.address = address;
     }
 
-    public LocalDate getBirthDate() {
+    public LocalDateTime getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(LocalDateTime birthDate) {
         this.birthDate = birthDate;
     }
 

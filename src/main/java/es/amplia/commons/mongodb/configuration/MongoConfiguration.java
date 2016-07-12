@@ -1,17 +1,28 @@
 package es.amplia.commons.mongodb.configuration;
 
 import com.mongodb.MongoClient;
+import es.amplia.commons.mongodb.converters.DateToLocalDateTimeConverter;
+import es.amplia.commons.mongodb.converters.LocalDateTimeToDateConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.convert.CustomConversions;
+import org.springframework.data.mongodb.core.mapping.event.LoggingEventListener;
+import org.springframework.data.mongodb.core.mapping.event.MongoMappingEvent;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "es.amplia.commons.mongodb.repositories")
@@ -32,7 +43,6 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
     public MongoDbFactory mongoDbFactory() throws Exception {
         return new SimpleMongoDbFactory(mongo(), getDatabaseName());
     }
-
 
     @Override
     protected String getMappingBasePackage() {
@@ -56,5 +66,11 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Bean
+    @Override
+    public CustomConversions customConversions() {
+        return new CustomConversions(Arrays.asList(new LocalDateTimeToDateConverter(), new DateToLocalDateTimeConverter()));
     }
 }
