@@ -2,6 +2,7 @@ package es.amplia.commons.mongodb;
 
 import com.github.fakemongo.Fongo;
 import com.mongodb.MongoClient;
+import es.amplia.commons.mongodb.configuration.MongoConfiguration;
 import es.amplia.commons.mongodb.converters.DateToLocalDateTimeConverter;
 import es.amplia.commons.mongodb.converters.LocalDateTimeToDateConverter;
 import es.amplia.commons.mongodb.repositories.PersonRepository;
@@ -25,7 +26,7 @@ import java.util.List;
 @EnableMongoRepositories(basePackageClasses = {PersonRepository.class})
 @EnableMongoAuditing
 @PropertySource(value={"classpath:mongo.properties"})
-public class TestMongoConfiguration extends AbstractMongoConfiguration {
+public class TestMongoConfiguration extends MongoConfiguration {
 
     @Value("${databaseName}")
     String databaseName;
@@ -33,11 +34,6 @@ public class TestMongoConfiguration extends AbstractMongoConfiguration {
     @Override
     protected String getDatabaseName() {
         return databaseName;
-    }
-
-    @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongo(), getDatabaseName());
     }
 
     @Override

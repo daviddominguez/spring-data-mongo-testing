@@ -8,21 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
-import org.springframework.data.mongodb.core.mapping.event.LoggingEventListener;
-import org.springframework.data.mongodb.core.mapping.event.MongoMappingEvent;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "es.amplia.commons.mongodb.repositories")
@@ -39,6 +33,10 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
     @Value("${port:27017}")
     int port;
 
+    /**
+     * No need to implement
+     * @see AbstractMongoConfiguration#mongoDbFactory
+     */
     @Bean
     public MongoDbFactory mongoDbFactory() throws Exception {
         return new SimpleMongoDbFactory(mongo(), getDatabaseName());
@@ -58,9 +56,14 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
         // return new MongoClient(new ServerAddress(host, ServerAddress.defaultPort()), MongoClientOptions.builder().build());
     }
 
+    /**
+     * No need to implement
+     * @see AbstractMongoConfiguration#mongoTemplate()
+     */
     @Bean
+    @Override
     public MongoTemplate mongoTemplate() throws Exception {
-        return new MongoTemplate(mongoDbFactory());
+        return new MongoTemplate(mongoDbFactory(), mappingMongoConverter());
     }
 
     @Bean
