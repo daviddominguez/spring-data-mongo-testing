@@ -21,10 +21,14 @@ public class CountryRepositoryTest extends AbstractSpringTest {
 
     @Test
     public void given_a_collection_of_countries_when_inserted_then_all_countries_are_inserted() {
-        Collection<Country> countriesToInsert = given_a_collection_of_countries(1000000);
+        Collection<Country> countriesToInsert = given_a_collection_of_countries(100);
         countryRepository.save(countriesToInsert);
         List<Country> insertedCountries = countryRepository.findAll();
         assertThat(insertedCountries, is(countriesToInsert));
+    }
+
+    private List<Country> given_a_list_of_countries_persisted_in_mongo(int size) {
+        return countryRepository.save(given_a_collection_of_countries(size));
     }
 
     private Collection<Country> given_a_collection_of_countries (int size) {
