@@ -11,7 +11,8 @@ import java.util.Date;
 public class DateToLocalDateTimeConverter implements Converter<Date, LocalDateTime> {
 
     public LocalDateTime convert(Date source) {
-        if (source == null) return null;
+        if (source == null)
+            return null;
 
         LocalDateTime dt = LocalDateTime.fromDateFields(source);
 
