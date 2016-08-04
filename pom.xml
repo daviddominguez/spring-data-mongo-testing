@@ -101,6 +101,8 @@
     </dependencies>
 
     <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <spring.framework.version>4.3.1.RELEASE</spring.framework.version>
         <spring.data.mongodb.version>1.9.2.RELEASE</spring.data.mongodb.version>
         <mongo.version>3.2.2</mongo.version>
