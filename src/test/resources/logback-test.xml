@@ -2,7 +2,7 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <Pattern>
-                %d{HH:mm:ss.SSS} %highlight(%-5p) %magenta([%-10thread]) %-30logger{0} %cyan(%X{queue} %X{service_id} %X{packlink_ref}) | %m%n
+                %d{HH:mm:ss.SSS} %highlight(%-5p) %magenta([%-10thread]) %-30logger{0} | %m%n
             </Pattern>
         </encoder>
     </appender>
