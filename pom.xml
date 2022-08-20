@@ -104,7 +104,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <spring.framework.version>4.3.1.RELEASE</spring.framework.version>
-        <spring.data.mongodb.version>1.9.2.RELEASE</spring.data.mongodb.version>
+        <spring.data.mongodb.version>3.3.5</spring.data.mongodb.version>
         <mongo.version>3.2.2</mongo.version>
         <guava.version>19.0</guava.version>
         <joda-time.version>2.9.4</joda-time.version>
